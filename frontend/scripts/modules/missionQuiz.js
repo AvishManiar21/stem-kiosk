@@ -753,24 +753,24 @@ export function mount(root) {
     timerEl.textContent = `${timer}s`;
   }
 
-  function endMission() {
+  async function endMission() {
     acceptingAnswers = false;
     clearInterval(ticking);
     ticking = null;
     overlay.classList.add("active");
     summaryEl.textContent = `You scored ${score} mission points across ${pool.length} stages.`;
-    
+
     // Save score and statistics
     playTime = Math.floor((Date.now() - gameStartTime) / 1000);
     if (score > 0) {
-      saveScore('missionQuiz', score);
-      updateStatistics('missionQuiz', {
+      await saveScore('missionQuiz', score);
+      await updateStatistics('missionQuiz', {
         score,
         playTime,
         result: score > 0 ? 'win' : 'loss'
       });
     }
-    
+
     if (!best || score > best) {
       best = score;
       localStorage.setItem("mission-quiz-best", best);

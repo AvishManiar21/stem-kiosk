@@ -19,7 +19,8 @@ stem-kiosk/
 │   ├── assets/              # Static assets
 │   │   ├── banners/         # Banner images
 │   │   └── icons/           # Icon files
-│   ├── images/              # Screensaver images
+│   ├── images/              # Image assets
+│   │   └── screensaver/     # Screensaver/attract-mode images only (no fallback)
 │   └── ms team instructions.pdf  # PDF resources
 │
 ├── backend/                 # Server files

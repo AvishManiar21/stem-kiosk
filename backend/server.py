@@ -39,6 +39,8 @@ class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/__screensaver":
             return self.handle_screensaver_request()
+        if parsed.path == "/__banner":
+            return self.handle_banner_request()
         if parsed.path == "/__restore":
             return self.handle_restore_request()
         return super().do_GET()
@@ -101,21 +103,32 @@ class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(encoded)
 
     def handle_screensaver_request(self):
-        # Look in the specific 'screensaver' subfolder first
+        # Attract mode / screensaver uses ONLY images from images/screensaver (no fallback)
         screensaver_dir = BASE_DIR / "images" / "screensaver"
-        images_dir = screensaver_dir if screensaver_dir.exists() else (BASE_DIR / "images")
+        if not screensaver_dir.exists():
+            return self.send_json({"images": []})
 
+        extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+        files_list = []
+        for name in sorted(os.listdir(screensaver_dir)):
+            if Path(name).suffix.lower() in extensions:
+                files_list.append(f"images/screensaver/{name}")
+
+        return self.send_json({"images": files_list})
+
+    def handle_banner_request(self):
+        # Banner uses images from main images/ directory (excluding screensaver subdirectory)
+        images_dir = BASE_DIR / "images"
         if not images_dir.exists():
             return self.send_json({"images": []})
 
         extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
         files_list = []
-
-        prefix = "images/screensaver/" if images_dir == screensaver_dir else "images/"
-
         for name in sorted(os.listdir(images_dir)):
-            if Path(name).suffix.lower() in extensions:
-                files_list.append(f"{prefix}{name}")
+            file_path = images_dir / name
+            # Only include files (not directories) with valid extensions
+            if file_path.is_file() and Path(name).suffix.lower() in extensions:
+                files_list.append(f"images/{name}")
 
         return self.send_json({"images": files_list})
 

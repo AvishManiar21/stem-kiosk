@@ -55,7 +55,7 @@ Each activity is modular (`scripts/modules/*`). Add new games by exporting a `mo
 - **Sound On / Muted**: toggle UI sound effects (re-initializes the audio context when re-enabled).
 - **Restart Kiosk**: reloads the kiosk and returns to the home screen.
 - **Exit Kiosk**: sends a request to the local kiosk server to shut down Chromium. If the browser refuses, the kiosk shows instructions (Alt+F4 or use the desktop launcher).
-- **Screensaver**: after 3 minutes of inactivity the kiosk shows a slideshow sourced from the `images/` folder; any touch/key/mouse input dismisses it and resets the timer.
+- **Screensaver / Attract mode**: after inactivity the kiosk shows a slideshow **only** from the `frontend/images/screensaver/` folder; any touch/key/mouse input dismisses it and resets the timer. Put your screensaver images in `images/screensaver/` so attract mode uses them (no other images are used).
 
 ## Customizing
 

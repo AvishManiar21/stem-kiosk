@@ -221,24 +221,24 @@ export function mount(root) {
     drawScore.textContent = draws;
   }
 
-  function makeMove(index, player) {
+  async function makeMove(index, player) {
     if (board[index] !== null || gameOver) return false;
-    
+
     board[index] = player;
     updateDisplay();
-    
+
     winner = checkWinner(board);
     if (winner) {
       gameOver = true;
       playTime = Math.floor((Date.now() - gameStartTime) / 1000);
-      
+
       if (winner === 'X') {
         xWins++;
         overlayTitle.textContent = 'Atom Wins!';
         overlayMessage.textContent = 'The atom has formed a stable configuration!';
         // Save score for Atom win (player)
-        saveScore('stemTicTacToe', 100);
-        updateStatistics('stemTicTacToe', {
+        await saveScore('stemTicTacToe', 100);
+        await updateStatistics('stemTicTacToe', {
           score: 100,
           playTime,
           result: 'win'
@@ -249,14 +249,14 @@ export function mount(root) {
         overlayMessage.textContent = 'The electron has achieved the perfect orbit!';
         // Save score for Electron win (AI or player 2)
         if (gameMode === 'multiplayer') {
-          saveScore('stemTicTacToe', 100);
-          updateStatistics('stemTicTacToe', {
+          await saveScore('stemTicTacToe', 100);
+          await updateStatistics('stemTicTacToe', {
             score: 100,
             playTime,
             result: 'win'
           });
         } else {
-          updateStatistics('stemTicTacToe', {
+          await updateStatistics('stemTicTacToe', {
             score: 0,
             playTime,
             result: 'loss'
@@ -268,14 +268,14 @@ export function mount(root) {
       factDisplay.textContent = currentFact;
       return true;
     }
-    
+
     if (isBoardFull(board)) {
       gameOver = true;
       draws++;
       playTime = Math.floor((Date.now() - gameStartTime) / 1000);
       overlayTitle.textContent = 'Draw!';
       overlayMessage.textContent = 'No winner - the atoms and electrons are in equilibrium.';
-      updateStatistics('stemTicTacToe', {
+      await updateStatistics('stemTicTacToe', {
         score: 50,
         playTime,
         result: 'draw'
@@ -285,7 +285,7 @@ export function mount(root) {
       factDisplay.textContent = currentFact;
       return true;
     }
-    
+
     return true;
   }
 
@@ -314,13 +314,13 @@ export function mount(root) {
     resetGame();
   }
 
-  function handleCellClick(e) {
+  async function handleCellClick(e) {
     if (gameOver || !gameMode) return;
-    
+
     const cell = e.currentTarget;
     const index = parseInt(cell.dataset.index);
-    
-    if (makeMove(index, currentPlayer)) {
+
+    if (await makeMove(index, currentPlayer)) {
       // In multiplayer mode, switch players
       if (gameMode === 'multiplayer') {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
@@ -328,9 +328,9 @@ export function mount(root) {
         // In computer mode, AI makes move after player
         currentPlayer = 'O';
         if (!gameOver) {
-          setTimeout(() => {
+          setTimeout(async () => {
             const aiMove = getBestMove([...board], 'O');
-            if (aiMove !== undefined && makeMove(aiMove, 'O')) {
+            if (aiMove !== undefined && await makeMove(aiMove, 'O')) {
               currentPlayer = 'X';
             }
           }, 500);

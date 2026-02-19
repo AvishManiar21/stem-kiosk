@@ -543,13 +543,13 @@ function setupNavigation() {
   }
 }
 
-function init() {
+async function init() {
   initTheme();
   setupActivityCards();
   setupNavigation();
   initClock();
   setupControls();
-  initBanner();
+  await initBanner();
 }
 
 if (document.readyState === "loading") {

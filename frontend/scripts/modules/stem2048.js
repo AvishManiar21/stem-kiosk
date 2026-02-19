@@ -507,18 +507,18 @@ export function mount(root) {
       </div>`;
   }
 
-  function startGame() {
+  async function startGame() {
     // Save previous game stats if score > 0
     if (score > 0) {
       playTime = Math.floor((Date.now() - gameStartTime) / 1000);
-      saveScore('stem2048', score);
-      updateStatistics('stem2048', {
+      await saveScore('stem2048', score);
+      await updateStatistics('stem2048', {
         score,
         playTime,
         result: isGameWon(board) ? 'win' : 'loss'
       });
     }
-    
+
     board = createEmptyGrid();
     score = 0;
     gameStartTime = Date.now();

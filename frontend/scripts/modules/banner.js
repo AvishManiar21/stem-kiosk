@@ -1,4 +1,4 @@
-export default function initBanner() {
+export default async function initBanner() {
     const bannerContainer = document.getElementById('homeBanner');
     if (!bannerContainer) return;
 
@@ -6,14 +6,23 @@ export default function initBanner() {
     const ROTATION_INTERVAL = 5000; // 5 seconds
     const TRANSITION_DURATION = 1000; // 1 second
 
-    // Image list (using available images)
-    const images = [
-        'images/GithubWorkshop.jpeg',
-        'images/IMG_2021.jpeg',
-        'images/IMG_2342.jpeg',
-        'images/IMG_2353.jpeg',
-        'images/IMG_2359.jpeg'
-    ];
+    // Load images from banner endpoint (all images in main images/ folder)
+    let images = [];
+    try {
+        const res = await fetch('/__banner', { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            images = Array.isArray(data.images) ? data.images : [];
+        }
+    } catch (err) {
+        console.error('Failed to load banner images', err);
+    }
+
+    // Fallback to empty if no images
+    if (!images.length) {
+        bannerContainer.innerHTML = '<div class="banner__content"><h2 class="banner__title">Welcome to STEM Discovery</h2><p class="banner__subtitle">Explore. Learn. Create.</p></div>';
+        return;
+    }
 
     let currentIndex = 0;
     let timer = null;

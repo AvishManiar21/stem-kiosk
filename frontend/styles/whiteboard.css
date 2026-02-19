@@ -29,6 +29,7 @@
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     z-index: 100;
+    position: relative;
 }
 
 .whiteboard__sidebar--collapsed {
@@ -75,41 +76,38 @@
 }
 
 .sidebar__toggle {
-    background: rgba(255, 255, 255, 0.1);
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #3b82f6;
     color: white;
-    border: none;
-    border-radius: 8px;
-    width: 45px;
-    height: 45px;
+    border: 3px solid white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    z-index: 200;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar__toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+    background: #2563eb;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
 }
 
 .sidebar__toggle svg {
     transition: transform 0.3s ease;
 }
 
-/* Hamburger menu animation when collapsed */
-.whiteboard__sidebar--collapsed .sidebar__toggle svg line:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
-    transform-origin: center;
-}
-
-.whiteboard__sidebar--collapsed .sidebar__toggle svg line:nth-child(2) {
-    opacity: 0;
-}
-
-.whiteboard__sidebar--collapsed .sidebar__toggle svg line:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
-    transform-origin: center;
+/* Arrow points left when expanded, right when collapsed */
+.whiteboard__sidebar--collapsed .sidebar__toggle svg {
+    transform: rotate(180deg);
 }
 
 .sidebar__toggle svg line {
@@ -125,6 +123,8 @@
     flex-direction: column;
     gap: 25px;
     transition: opacity 0.3s ease;
+    /* Center content vertically for medium-height students */
+    justify-content: center;
 }
 
 /* Sidebar Sections */
@@ -269,7 +269,7 @@
 
 /* Action Buttons */
 .sidebar__section--actions {
-    margin-top: auto;
+    margin-top: 0;
     padding-top: 20px;
     border-top: 2px solid rgba(255, 255, 255, 0.1);
 }

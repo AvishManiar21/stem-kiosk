@@ -310,7 +310,7 @@ export function mount(container) {
         }
     }
 
-    function endGame() {
+    async function endGame() {
         isGameOver = true;
         clearInterval(gameLoop);
 
@@ -319,8 +319,8 @@ export function mount(container) {
 
         // Save score to leaderboard and statistics
         if (score > 0) {
-            saveScore('snakeGame', score);
-            updateStatistics('snakeGame', {
+            await saveScore('snakeGame', score);
+            await updateStatistics('snakeGame', {
                 score,
                 playTime,
                 result: 'loss' // Snake game doesn't have a "win" condition
