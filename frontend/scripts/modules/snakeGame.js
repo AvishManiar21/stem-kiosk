@@ -7,8 +7,9 @@ import { saveScore, updateStatistics } from '../storage.js';
 const GRID_WIDTH = 20;  // Fewer columns to keep board size
 const GRID_HEIGHT = 16; // Fewer rows to keep board size
 const CELL_SIZE = 50;   // Extra large cells
-const INITIAL_SPEED = 200;  // Slower speed (higher = slower)
-const SPEED_INCREMENT = 2;
+const INITIAL_SPEED = 320;  // ms between moves (higher = slower, good for kiosk)
+const SPEED_INCREMENT = 1;  // how much faster per food (smaller = gentler ramp)
+const MIN_SPEED = 120;      // never faster than this (ms)
 
 export function mount(container) {
     let canvas, ctx;
@@ -122,8 +123,8 @@ export function mount(container) {
             document.getElementById('snakeScore').textContent = score;
             spawnFood();
 
-            // Increase speed slightly
-            if (speed > 50) {
+            // Increase speed slightly (cap at MIN_SPEED so it never gets too fast)
+            if (speed > MIN_SPEED) {
                 speed -= SPEED_INCREMENT;
                 clearInterval(gameLoop);
                 gameLoop = setInterval(update, speed);

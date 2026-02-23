@@ -42,6 +42,69 @@ The server is configured in your SSH config at `~/.ssh/config` as `172.16.74.22`
 2. Open `http://localhost:8000` in Chromium (use `--kiosk --app=http://localhost:8000` for kiosk mode).
 3. Touch/mouse controls are supported out of the box.
 
+**Run the proper server (recommended):** From the project root run `python backend/server.py` or `start-server.bat`. This server is **crash-resistant**: a bad request or client disconnect won’t take it down; errors are logged and the server keeps running. If it does exit, restart it the same way.
+
+## Deploying to Raspberry Pi
+
+We use **SCP** to copy changed files to the Pi and **SSH** (`ssh pi-kiosk`) to run commands. Add a host alias in `~/.ssh/config`:
+
+```
+Host pi-kiosk
+  HostName 172.16.74.22
+  User stemcenter
+```
+
+**Deploy code and assets (frontend + backend), then restart kiosk and browser:**
+```bash
+# From project root. Sleep 5 so server is up before Chromium restarts (avoids localhost error).
+scp backend/server.py frontend/scripts/app.js frontend/scripts/modules/*.js frontend/styles/*.css frontend/index.html pi-kiosk:~/stem-kiosk/temp/ && ssh pi-kiosk "mv ~/stem-kiosk/temp/server.py ~/stem-kiosk/backend/ && mv ~/stem-kiosk/temp/app.js ~/stem-kiosk/frontend/scripts/ && mv ~/stem-kiosk/temp/*.js ~/stem-kiosk/frontend/scripts/modules/ && mv ~/stem-kiosk/temp/*.css ~/stem-kiosk/frontend/styles/ && mv ~/stem-kiosk/temp/index.html ~/stem-kiosk/frontend/ && sudo systemctl restart stem-kiosk.service && sleep 5 && DISPLAY=:0 pkill chromium"
+```
+
+**Deploy only specific files (e.g. one or two modules):**
+```bash
+scp frontend/scripts/modules/snakeGame.js frontend/scripts/modules/missionQuiz.js pi-kiosk:~/stem-kiosk/temp/ && ssh pi-kiosk "mv ~/stem-kiosk/temp/*.js ~/stem-kiosk/frontend/scripts/modules/ && sudo systemctl restart stem-kiosk.service && sleep 5 && DISPLAY=:0 pkill chromium"
+```
+
+**Deploy images (e.g. new screensaver or banner images):**
+```bash
+scp frontend/images/screensaver/*.png pi-kiosk:~/stem-kiosk/frontend/images/screensaver/
+# Or sync a whole folder:
+scp -r frontend/images/screensaver/ pi-kiosk:~/stem-kiosk/frontend/images/
+```
+
+After deploy, the kiosk service restarts and Chromium reloads so the Pi shows the latest content.
+
+### Pi: “Localhost” or “Can’t connect” error after restart
+
+If the Pi shows **“This site can’t be reached”** or **“Connection refused”** for localhost:8000 after a reboot or after deploy, the browser is up before the web server is ready.
+
+**1. Check that the kiosk web server is running (from your PC, in Git Bash):**
+```bash
+ssh pi-kiosk "sudo systemctl status stem-kiosk.service"
+```
+You want `Active: active (running)`.
+
+**2. If it’s not running or failed, restart it and check logs:**
+```bash
+ssh pi-kiosk "sudo systemctl restart stem-kiosk.service && sleep 3 && sudo systemctl status stem-kiosk.service"
+```
+To see why it failed:
+```bash
+ssh pi-kiosk "journalctl -u stem-kiosk.service -n 30 --no-pager"
+```
+
+**3. Once the server is running, restart the browser on the Pi:**
+```bash
+ssh pi-kiosk "DISPLAY=:0 pkill chromium"
+```
+The kiosk’s watchdog will start Chromium again in a few seconds; by then the server should be ready.
+
+**4. If the Pi just rebooted,** wait 30–60 seconds for the server and network to come up, then from the Pi (keyboard/monitor or SSH) run:
+```bash
+~/stem-kiosk/setup/restart_kiosk.sh
+```
+Or double‑click the “STEM Kiosk” shortcut on the desktop.
+
 ## Activities
 
 - **Fusion 2048**: classic 2048 mechanics with STEM facts unlocked on merges.

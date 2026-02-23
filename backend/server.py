@@ -4,13 +4,16 @@ Lightweight kiosk web server with control endpoints.
 
 Serves the project directory and provides a limited control API so the
 front-end can request actions such as shutting down Chromium.
+Crash-resistant: bad requests and handler errors are caught and logged.
 """
 
 import http.server
 import json
 import os
 import subprocess
+import sys
 import threading
+import traceback
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -18,13 +21,44 @@ from urllib.parse import parse_qs, urlparse
 BASE_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
 
+def ensure_base_dir():
+    """Fail fast at startup if frontend dir is missing."""
+    if not BASE_DIR.is_dir():
+        print(f"[FATAL] Frontend directory not found: {BASE_DIR}", file=sys.stderr)
+        print("Run the server from the project root (e.g. python backend/server.py).", file=sys.stderr)
+        sys.exit(1)
+
+
 class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(BASE_DIR), **kwargs)
 
     def log_message(self, format, *args):  # noqa: A003 - intent to override
-        syslog = f"{self.log_date_time_string()} - {self.address_string()} - {format % args}"
-        print(syslog)
+        try:
+            msg = format % args
+        except Exception:
+            msg = f"{format!r} {args!r}"
+        try:
+            print(f"{self.log_date_time_string()} - {self.address_string()} - {msg}")
+        except Exception:
+            print("(log_message failed)", flush=True)
+
+    def handle(self):
+        """Wrap request handling so one bad request never crashes the server."""
+        try:
+            super().handle()
+        except BrokenPipeError:
+            # Client closed connection; ignore
+            pass
+        except ConnectionResetError:
+            pass
+        except Exception as e:
+            print(f"[ERROR] Request failed: {e}", flush=True)
+            traceback.print_exc()
+            try:
+                self.send_error(500, f"Server error: {e}")
+            except Exception:
+                pass
 
     def end_headers(self):
         # Add cache-control headers for HTML, JS, and CSS files to prevent aggressive caching
@@ -65,7 +99,10 @@ class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
         if parsed.path != "/__control":
             return super().do_POST()
 
-        length = int(self.headers.get("Content-Length", 0))
+        try:
+            length = min(int(self.headers.get("Content-Length", 0) or 0), 1024 * 1024)
+        except (ValueError, TypeError):
+            length = 0
         body = self.rfile.read(length) if length else b""
         payload = {}
         if body:
@@ -104,33 +141,36 @@ class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def handle_screensaver_request(self):
         # Attract mode / screensaver uses ONLY images from images/screensaver (no fallback)
-        screensaver_dir = BASE_DIR / "images" / "screensaver"
-        if not screensaver_dir.exists():
+        try:
+            screensaver_dir = BASE_DIR / "images" / "screensaver"
+            if not screensaver_dir.exists():
+                return self.send_json({"images": []})
+            extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+            files_list = []
+            for name in sorted(os.listdir(screensaver_dir)):
+                if Path(name).suffix.lower() in extensions:
+                    files_list.append(f"images/screensaver/{name}")
+            return self.send_json({"images": files_list})
+        except OSError as e:
+            print(f"[WARN] Screensaver list failed: {e}", flush=True)
             return self.send_json({"images": []})
-
-        extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-        files_list = []
-        for name in sorted(os.listdir(screensaver_dir)):
-            if Path(name).suffix.lower() in extensions:
-                files_list.append(f"images/screensaver/{name}")
-
-        return self.send_json({"images": files_list})
 
     def handle_banner_request(self):
         # Banner uses images from main images/ directory (excluding screensaver subdirectory)
-        images_dir = BASE_DIR / "images"
-        if not images_dir.exists():
+        try:
+            images_dir = BASE_DIR / "images"
+            if not images_dir.exists():
+                return self.send_json({"images": []})
+            extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+            files_list = []
+            for name in sorted(os.listdir(images_dir)):
+                file_path = images_dir / name
+                if file_path.is_file() and Path(name).suffix.lower() in extensions:
+                    files_list.append(f"images/{name}")
+            return self.send_json({"images": files_list})
+        except OSError as e:
+            print(f"[WARN] Banner list failed: {e}", flush=True)
             return self.send_json({"images": []})
-
-        extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-        files_list = []
-        for name in sorted(os.listdir(images_dir)):
-            file_path = images_dir / name
-            # Only include files (not directories) with valid extensions
-            if file_path.is_file() and Path(name).suffix.lower() in extensions:
-                files_list.append(f"images/{name}")
-
-        return self.send_json({"images": files_list})
 
     def handle_backup_request(self):
         """Save backup data from the client"""
@@ -185,13 +225,24 @@ class KioskRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def terminate_chromium():
-    candidates = [
-        "chromium-browser",
-        "chromium",
-        "chromium-browser-stable",
-    ]
-    for name in candidates:
-        subprocess.run(["pkill", "-f", name], check=False)
+    """Kill Chromium (used on Pi when user exits kiosk). No-op on Windows; must not crash."""
+    try:
+        if sys.platform == "win32":
+            subprocess.run(
+                ["taskkill", "/F", "/IM", "chromium.exe", "/T"],
+                capture_output=True,
+                timeout=5,
+            )
+            subprocess.run(
+                ["taskkill", "/F", "/IM", "chrome.exe", "/T"],
+                capture_output=True,
+                timeout=5,
+            )
+        else:
+            for name in ("chromium-browser", "chromium", "chromium-browser-stable"):
+                subprocess.run(["pkill", "-f", name], check=False, timeout=2)
+    except Exception as e:
+        print(f"[WARN] terminate_chromium: {e}", flush=True)
 
 
 def start_server_on_port(port):
@@ -221,6 +272,7 @@ def start_server_on_port(port):
 
 
 def main():
+    ensure_base_dir()
     # Support multiple ports via environment variable (comma-separated)
     ports_env = os.environ.get("KIOSK_PORTS", os.environ.get("KIOSK_PORT", "8000"))
     
@@ -274,4 +326,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nShutting down kiosk server.")
+    except Exception as e:
+        print(f"[FATAL] {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)

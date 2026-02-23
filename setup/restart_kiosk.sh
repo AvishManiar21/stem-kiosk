@@ -31,18 +31,20 @@ unclutter -display :0 -idle 0.5 -root &
 pkill -f notification-daemon 2>/dev/null || true
 pkill -f dunst 2>/dev/null || true
 
-# Wait for server to be ready
+# Wait for server to be ready (avoid localhost error on Pi after restart)
 SERVER_URL="http://localhost:8000"
 echo "Waiting for server..."
-MAX_WAIT=30
+MAX_WAIT=90
 WAITED=0
 until curl -fsS --max-time 2 "${SERVER_URL}" >/dev/null 2>&1; do
-  sleep 1
-  WAITED=$((WAITED + 1))
+  sleep 2
+  WAITED=$((WAITED + 2))
   if [[ ${WAITED} -ge ${MAX_WAIT} ]]; then
-    echo "WARNING: Server not responding after ${MAX_WAIT}s"
+    echo "WARNING: Server not responding after ${MAX_WAIT}s - check: sudo systemctl status stem-kiosk.service"
+    echo "Launching browser anyway; reload the page once the server is up."
     break
   fi
+  echo "  ... waiting for kiosk server (${WAITED}s)"
 done
 echo "Server ready."
 

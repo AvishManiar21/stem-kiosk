@@ -1,135 +1,129 @@
 /* ============================================
-   IDEA INCUBATOR
+   IDEA INCUBATOR (theme-aware, like other apps)
    ============================================ */
 .idea-incubator {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 5000;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--bg);
 }
 
 /* Header */
 .incubator__header {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 30px;
+    background: var(--surface);
+    padding: 24px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid var(--border);
+    flex-shrink: 0;
 }
 
 .incubator__header h1 {
     margin: 0;
-    font-size: 3rem;
-    color: white;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-size: 2.5rem;
+    color: var(--text);
 }
 
 .incubator__header p {
     margin: 5px 0 0 0;
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    color: var(--text-muted);
 }
 
 .incubator__close {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 2px solid var(--border);
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition, 0.15s ease);
 }
 
 .incubator__close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background: var(--border);
+    transform: scale(1.05);
 }
 
 /* Content */
 .incubator__content {
     flex: 1;
     overflow-y: auto;
-    padding: 30px;
+    padding: 24px 30px;
+    min-height: 0;
 }
 
 /* Submit Section */
 .incubator__submit-section {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius, 16px);
+    padding: 24px 30px;
+    margin-bottom: 24px;
     text-align: center;
 }
 
 .incubator__submit-section h2 {
     margin: 0 0 20px 0;
-    font-size: 2.2rem;
-    color: #1f2937;
+    font-size: 2rem;
+    color: var(--text);
 }
 
 .btn-submit-idea {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--accent);
     color: white;
     border: none;
-    border-radius: 12px;
-    padding: 18px 40px;
-    font-size: 1.6rem;
+    border-radius: var(--radius-sm, 12px);
+    padding: 16px 36px;
+    font-size: 1.5rem;
     font-weight: 700;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    transition: var(--transition, 0.15s ease);
 }
 
 .btn-submit-idea:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    background: var(--accent-hover);
+    transform: translateY(-2px);
 }
 
 /* Filters */
 .incubator__filters {
     display: flex;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     justify-content: center;
 }
 
 .filter-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: var(--surface);
+    color: var(--text);
+    border: 2px solid var(--border);
     border-radius: 25px;
-    padding: 12px 30px;
-    font-size: 1.3rem;
+    padding: 12px 28px;
+    font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition, 0.15s ease);
 }
 
 .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--surface-hover);
     transform: translateY(-2px);
 }
 
 .filter-btn--active {
-    background: white;
-    color: #667eea;
-    border-color: white;
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
 }
 
 /* Ideas Grid */
@@ -141,17 +135,17 @@
 
 /* Idea Card */
 .idea-card {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius, 16px);
+    padding: 24px;
+    transition: var(--transition, 0.15s ease);
     cursor: pointer;
 }
 
 .idea-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px);
+    border-color: var(--accent);
 }
 
 .idea-card__header {
@@ -197,20 +191,20 @@
 
 .idea-date {
     font-size: 1rem;
-    color: #9ca3af;
+    color: var(--text-muted);
 }
 
 .idea-title {
     margin: 0 0 12px 0;
-    font-size: 1.8rem;
-    color: #1f2937;
+    font-size: 1.6rem;
+    color: var(--text);
     line-height: 1.3;
 }
 
 .idea-description {
     margin: 0 0 20px 0;
-    font-size: 1.2rem;
-    color: #6b7280;
+    font-size: 1.15rem;
+    color: var(--text-muted);
     line-height: 1.6;
 }
 
@@ -219,12 +213,12 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 15px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border);
 }
 
 .idea-author {
     font-size: 1.1rem;
-    color: #9ca3af;
+    color: var(--text-muted);
     font-style: italic;
 }
 
@@ -236,15 +230,15 @@
 
 .idea-like-btn {
     background: transparent;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 25px;
     padding: 8px 16px;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: all 0.2s;
-    color: #6b7280;
+    transition: var(--transition, 0.15s ease);
+    color: var(--text-muted);
     font-size: 1.2rem;
     font-weight: 600;
 }
@@ -264,7 +258,7 @@
 .idea-edit-btn,
 .idea-delete-btn {
     background: transparent;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -272,8 +266,8 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
-    color: #6b7280;
+    transition: var(--transition, 0.15s ease);
+    color: var(--text-muted);
 }
 
 .idea-edit-btn:hover {
@@ -293,24 +287,25 @@
 /* Empty State */
 .empty-state {
     text-align: center;
-    padding: 80px 20px;
-    color: white;
+    padding: 60px 20px;
+    color: var(--text-muted);
 }
 
 .empty-state__icon {
-    font-size: 8rem;
-    margin-bottom: 20px;
+    font-size: 6rem;
+    margin-bottom: 16px;
 }
 
 .empty-state h3 {
     margin: 0 0 10px 0;
-    font-size: 2.5rem;
+    font-size: 2rem;
+    color: var(--text);
 }
 
 .empty-state p {
     margin: 0;
-    font-size: 1.5rem;
-    opacity: 0.9;
+    font-size: 1.3rem;
+    color: var(--text-muted);
 }
 
 /* ============================================
@@ -331,14 +326,14 @@
 }
 
 .idea-dialog {
-    background: white;
-    border-radius: 20px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius, 16px);
     width: 90%;
     max-width: 600px;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
@@ -351,8 +346,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    color: var(--text);
 }
 
 .idea-dialog__header h2 {
@@ -361,33 +357,36 @@
 }
 
 .idea-dialog__header--danger {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: var(--surface);
+    border-bottom-color: var(--red, #ef4444);
+    color: var(--red, #ef4444);
 }
 
 .idea-dialog__close {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 2px solid var(--border);
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    font-size: 2.5rem;
+    font-size: 2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: var(--transition, 0.15s ease);
 }
 
 .idea-dialog__close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background: var(--border);
+    transform: scale(1.05);
 }
 
 .idea-dialog__body {
     padding: 30px;
     overflow-y: auto;
     flex: 1;
+    background: var(--bg);
 }
 
 .idea-input-group {
@@ -398,7 +397,7 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 700;
-    color: #374151;
+    color: var(--text);
     font-size: 1.3rem;
 }
 
@@ -408,17 +407,19 @@
     width: 100%;
     padding: 14px 16px;
     font-size: 1.4rem;
-    border: 2px solid #d1d5db;
+    border: 2px solid var(--border);
     border-radius: 10px;
     outline: none;
     transition: border-color 0.2s;
     font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
 }
 
 .idea-input:focus,
 .idea-textarea:focus,
 .idea-select:focus {
-    border-color: #667eea;
+    border-color: var(--accent);
 }
 
 .idea-textarea {
@@ -428,11 +429,11 @@
 
 .idea-dialog__footer {
     padding: 20px 30px;
-    background: #f9fafb;
+    background: var(--surface);
     display: flex;
     gap: 15px;
     justify-content: flex-end;
-    border-top: 1px solid #e5e7eb;
+    border-top: 2px solid var(--border);
 }
 
 .idea-btn {
@@ -446,16 +447,17 @@
 }
 
 .idea-btn--cancel {
-    background: #6b7280;
-    color: white;
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 2px solid var(--border);
 }
 
 .idea-btn--cancel:hover {
-    background: #4b5563;
+    background: var(--border);
 }
 
 .idea-btn--submit {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--accent);
     color: white;
 }
 
@@ -464,7 +466,7 @@
 }
 
 .idea-btn--danger {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: var(--red, #ef4444);
     color: white;
 }
 
@@ -475,14 +477,14 @@
 /* Delete Confirmation Dialog */
 .confirm-message {
     font-size: 1.4rem;
-    color: #374151;
+    color: var(--text);
     margin-bottom: 20px;
     text-align: center;
 }
 
 .confirm-idea-preview {
-    background: #f9fafb;
-    border: 2px solid #e5e7eb;
+    background: var(--surface);
+    border: 2px solid var(--border);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -491,19 +493,19 @@
 .confirm-idea-preview h4 {
     margin: 0 0 8px 0;
     font-size: 1.4rem;
-    color: #1f2937;
+    color: var(--text);
 }
 
 .confirm-idea-preview p {
     margin: 0;
     font-size: 1.2rem;
-    color: #6b7280;
+    color: var(--text-muted);
     line-height: 1.5;
 }
 
 .confirm-warning {
     font-size: 1.3rem;
-    color: #ef4444;
+    color: var(--red, #ef4444);
     font-weight: 600;
     text-align: center;
     margin: 0;
@@ -522,7 +524,7 @@
 }
 
 .keyboard-trigger-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--accent);
     color: white;
     border: none;
     border-radius: 10px;
@@ -530,14 +532,13 @@
     height: 60px;
     font-size: 2rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition, 0.15s ease);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .keyboard-trigger-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+    background: var(--accent-hover);
+    transform: scale(1.05);
 }
 
 /* ============================================
@@ -567,14 +568,14 @@
 }
 
 .keyboard-dialog {
-    background: white;
-    border-radius: 20px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius, 16px);
     width: 90%;
     max-width: 800px;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
@@ -583,8 +584,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    color: var(--text);
 }
 
 .keyboard-dialog__header h2 {
@@ -594,29 +596,30 @@
 }
 
 .keyboard-dialog__close {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 2px solid var(--border);
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    font-size: 2.5rem;
+    font-size: 2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: var(--transition, 0.15s ease);
 }
 
 .keyboard-dialog__close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background: var(--border);
+    transform: scale(1.05);
 }
 
 .keyboard-dialog__body {
     padding: 25px;
     overflow-y: auto;
     flex: 1;
+    background: var(--bg);
 }
 
 .keyboard-input-group {
@@ -627,16 +630,18 @@
     width: 100%;
     padding: 15px;
     font-size: 1.5rem;
-    border: 2px solid #d1d5db;
+    border: 2px solid var(--border);
     border-radius: 10px;
     outline: none;
     transition: border-color 0.2s;
     font-family: inherit;
     resize: vertical;
+    background: var(--surface);
+    color: var(--text);
 }
 
 .keyboard-input:focus {
-    border-color: #667eea;
+    border-color: var(--accent);
 }
 
 .on-screen-keyboard {
@@ -654,25 +659,25 @@
 .key-btn {
     min-width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
+    background: var(--surface);
+    color: var(--text);
+    border: 2px solid var(--border);
     border-radius: 10px;
     font-size: 1.5rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: var(--transition, 0.15s ease);
 }
 
 .key-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: translateY(-2px);
 }
 
 .key-btn:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .key-btn--wide {
@@ -681,16 +686,16 @@
 
 .key-btn--backspace {
     min-width: 100px;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: var(--surface-hover);
 }
 
 .keyboard-dialog__footer {
     padding: 20px 30px;
-    background: #f9fafb;
+    background: var(--surface);
     display: flex;
     gap: 15px;
     justify-content: flex-end;
-    border-top: 1px solid #e5e7eb;
+    border-top: 2px solid var(--border);
 }
 
 .keyboard-btn {
@@ -704,16 +709,17 @@
 }
 
 .keyboard-btn--cancel {
-    background: #6b7280;
-    color: white;
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 2px solid var(--border);
 }
 
 .keyboard-btn--cancel:hover {
-    background: #4b5563;
+    background: var(--border);
 }
 
 .keyboard-btn--save {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--accent);
     color: white;
 }
 
@@ -727,15 +733,15 @@
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--green, #22c55e);
     color: white;
     padding: 20px 40px;
-    border-radius: 15px;
-    font-size: 1.6rem;
+    border-radius: var(--radius-sm, 12px);
+    font-size: 1.5rem;
     font-weight: 700;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     z-index: 30000;
     animation: slideUp 0.3s ease;
+    border: 2px solid var(--border);
 }
 
 @keyframes slideUp {
@@ -746,5 +752,168 @@
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ============================================
+   LARGE PORTRAIT KIOSK - Short-height reach
+   Same as 2048/Quiz: push content down, bigger touch targets.
+   ============================================ */
+@media (min-height: 900px) {
+    .idea-incubator {
+        padding-top: 10vh;
+    }
+
+    .incubator__header {
+        padding: 20px 30px;
+    }
+
+    .incubator__header h1 {
+        font-size: 2.25rem;
+    }
+
+    .incubator__close {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
+    }
+
+    .incubator__content {
+        padding-top: 20px;
+        padding-bottom: 32px;
+    }
+
+    .incubator__submit-section {
+        padding: 28px 32px;
+        margin-bottom: 28px;
+    }
+
+    .incubator__submit-section h2 {
+        font-size: 2rem;
+        margin-bottom: 24px;
+    }
+
+    .btn-submit-idea {
+        padding: 22px 44px;
+        font-size: 1.6rem;
+        min-height: 56px;
+    }
+
+    .incubator__filters {
+        margin-bottom: 28px;
+        gap: 18px;
+    }
+
+    .filter-btn {
+        padding: 18px 36px;
+        font-size: 1.35rem;
+        min-height: 54px;
+    }
+
+    .incubator__grid {
+        gap: 28px;
+    }
+
+    .idea-card {
+        padding: 28px;
+        min-height: 120px;
+    }
+
+    .idea-title {
+        font-size: 1.75rem;
+    }
+
+    .idea-description {
+        font-size: 1.2rem;
+    }
+
+    .idea-like-btn {
+        padding: 12px 22px;
+        font-size: 1.25rem;
+        min-height: 48px;
+    }
+
+    .idea-edit-btn,
+    .idea-delete-btn {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    /* Dialogs - larger buttons for short users */
+    .idea-dialog__header,
+    .idea-dialog__body {
+        padding: 28px 32px;
+    }
+
+    .idea-btn {
+        padding: 18px 36px;
+        font-size: 1.5rem;
+        min-height: 54px;
+    }
+
+    .idea-dialog__close {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
+    }
+
+    .keyboard-trigger-btn {
+        width: 72px;
+        height: 72px;
+        min-width: 72px;
+        min-height: 72px;
+        font-size: 2.25rem;
+    }
+
+    .keyboard-dialog__header {
+        padding: 24px 32px;
+    }
+
+    .keyboard-dialog__header h2 {
+        font-size: 2.25rem;
+    }
+
+    .keyboard-dialog__close {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
+    }
+
+    .keyboard-dialog__body {
+        padding: 28px;
+    }
+
+    .key-btn {
+        min-width: 72px;
+        height: 72px;
+        font-size: 1.75rem;
+    }
+
+    .key-btn--wide {
+        min-width: 320px;
+    }
+
+    .key-btn--backspace {
+        min-width: 110px;
+    }
+
+    .keyboard-dialog__footer {
+        padding: 24px 32px;
+    }
+
+    .keyboard-btn {
+        padding: 18px 36px;
+        font-size: 1.5rem;
+        min-height: 54px;
+    }
+
+    .success-toast {
+        padding: 24px 48px;
+        font-size: 1.6rem;
     }
 }

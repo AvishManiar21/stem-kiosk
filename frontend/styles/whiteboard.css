@@ -12,8 +12,12 @@
     flex-direction: row;
     padding: 0;
     margin: 0;
-    background: #ffffff;
+    background: var(--bg, #0c0c0f);
     overflow: hidden;
+}
+
+[data-theme="light"] .whiteboard {
+    background: var(--bg);
 }
 
 /* ============================================
@@ -338,14 +342,22 @@
     width: 100%;
     height: 100vh;
     position: relative;
-    background: #ffffff;
+    background: var(--bg, #0c0c0f);
     padding: 0;
     margin: 0;
     overflow: hidden;
 }
 
+[data-theme="light"] .whiteboard__canvas-wrapper {
+    background: var(--surface);
+}
+
+[data-theme="light"] #whiteboardCanvas {
+    background: var(--surface);
+}
+
 #whiteboardCanvas {
-    background: #ffffff;
+    background: var(--bg, #0c0c0f);
     cursor: crosshair;
     touch-action: none;
     width: 100%;

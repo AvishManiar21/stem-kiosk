@@ -21,18 +21,19 @@
   --red: #ef4444;
 }
 
+/* Light mode: soft background with clearly darker inner panels/cards (justifies content) */
 [data-theme="light"] {
-  --bg: #f4f4f5;
-  --surface: #ffffff;
-  --surface-hover: #e4e4e7;
-  --border: #d4d4d8;
-  --text: #18181b;
-  --text-muted: #71717a;
+  --bg: #e2e2e8;
+  --surface: #d2d1d9;
+  --surface-hover: #c2c1ca;
+  --border: #a8a7b2;
+  --text: #1a1a1f;
+  --text-muted: #4e4d56;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
-  --green: #16a34a;
-  --purple: #9333ea;
-  --red: #dc2626;
+  --green: #15803d;
+  --purple: #7c3aed;
+  --red: #b91c1c;
 }
 
 :root {
@@ -151,14 +152,14 @@ button {
   pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
 .nav-btn:hover {
   background: linear-gradient(135deg, var(--surface-hover) 0%, var(--surface) 100%);
   border-color: var(--accent);
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
 }
 
 .nav-btn:active {
@@ -201,16 +202,16 @@ button {
   text-shadow: 0 0 40px rgba(147, 197, 253, 0.3);
 }
 
-/* Lighter colors for light mode */
+/* Softer gradient for light mode (no harsh brightness) */
 [data-theme="light"] .home__title {
-  color: #3b82f6;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: #2563eb;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   background-size: 200% auto;
   animation: gradientShift 3s ease infinite;
-  filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.2));
+  filter: drop-shadow(0 0 12px rgba(79, 70, 229, 0.15));
 }
 
 @keyframes gradientShift {
@@ -277,7 +278,7 @@ button {
   border-color: var(--accent);
   outline: none;
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 12px 35px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 8px 28px rgba(37, 99, 235, 0.18);
 }
 
 .activity-card:active {
@@ -853,6 +854,10 @@ button {
   z-index: 9999;
 }
 
+[data-theme="light"] .dialog-overlay {
+  background: rgba(28, 28, 33, 0.75);
+}
+
 .dialog {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1116,7 +1121,7 @@ button {
 }
 
 [data-theme="light"] .stem2048__overlay {
-  background: rgba(244, 244, 245, 0.95);
+  background: rgba(210, 209, 217, 0.97);
 }
 
 .stem2048__overlay h3 {
@@ -1375,7 +1380,7 @@ button {
 }
 
 [data-theme="light"] .mission-quiz__overlay {
-  background: rgba(244, 244, 245, 0.95);
+  background: rgba(210, 209, 217, 0.97);
 }
 
 .mission-quiz__overlay.active {
@@ -1886,7 +1891,7 @@ button {
 }
 
 [data-theme="light"] .stem-tic-tac-toe__overlay {
-  background: rgba(244, 244, 245, 0.95);
+  background: rgba(210, 209, 217, 0.97);
 }
 
 .stem-tic-tac-toe__overlay h3 {
@@ -2528,6 +2533,196 @@ button {
 
   .stem-tic-tac-toe__board {
     max-width: 450px;
+  }
+}
+
+/* ============================================
+   LARGE PORTRAIT KIOSK - Short-height reach
+   Put main touch area (board, quiz options) in
+   lower half of screen so short students can use.
+   ============================================ */
+@media (min-height: 900px) {
+  /* Fusion 2048: push content down, board in lower half */
+  .stem2048 {
+    padding-top: 18vh;
+    padding-bottom: 24px;
+    justify-content: flex-start;
+  }
+
+  .stem2048__top-bar {
+    margin-bottom: 20px;
+    padding: 16px 32px;
+  }
+
+  .stem2048__board-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .stem2048__board {
+    max-width: min(520px, 85vw);
+    margin: 0 auto;
+  }
+
+  .stem2048__grid {
+    gap: 14px;
+  }
+
+  .stem2048__cell {
+    min-height: 0;
+    aspect-ratio: 1;
+  }
+
+  .stem2048__tile {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .stem2048__btn {
+    padding: 22px 44px;
+    font-size: 1.6rem;
+    min-height: 56px;
+  }
+
+  .stem2048__feed {
+    margin-top: 16px;
+    max-height: 220px;
+  }
+
+  /* Mission Quiz: push content down, big touch targets for answers */
+  .mission-quiz {
+    padding-top: 12vh;
+    padding-bottom: 24px;
+    justify-content: flex-start;
+  }
+
+  .mission-quiz__panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .mission-quiz__hud {
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+
+  .mission-quiz__question {
+    flex: 0 0 auto;
+  }
+
+  .mission-quiz__prompt {
+    font-size: 2.25rem;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+  }
+
+  .mission-quiz__options {
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .mission-quiz__option {
+    min-height: 160px;
+    padding: 32px 24px;
+    font-size: 1.75rem;
+  }
+
+  .mission-quiz__controls {
+    margin-top: 24px;
+    flex-shrink: 0;
+  }
+
+  .mission-quiz__btn {
+    padding: 18px 36px;
+    font-size: 1.15rem;
+    min-height: 52px;
+  }
+
+  /* Atom vs Electron (Tic Tac Toe): push content down, larger touch targets */
+  .stem-tic-tac-toe {
+    padding-top: 14vh;
+    padding-bottom: 24px;
+    justify-content: flex-start;
+  }
+
+  .stem-tic-tac-toe__mode-selection {
+    flex: 1;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .stem-tic-tac-toe__mode-title {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .stem-tic-tac-toe__mode-buttons {
+    gap: 28px;
+    max-width: 700px;
+  }
+
+  .stem-tic-tac-toe__mode-btn {
+    padding: 40px 36px;
+    min-height: 180px;
+  }
+
+  .stem-tic-tac-toe__mode-btn h3 {
+    font-size: 2.25rem;
+  }
+
+  .stem-tic-tac-toe__mode-btn p {
+    font-size: 1.35rem;
+  }
+
+  .stem-tic-tac-toe__top-bar {
+    margin-bottom: 24px;
+    padding: 20px 32px;
+  }
+
+  .stem-tic-tac-toe__board-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .stem-tic-tac-toe__board {
+    max-width: min(480px, 85vw);
+    margin: 0 auto;
+    padding: 20px;
+    gap: 14px;
+  }
+
+  .stem-tic-tac-toe__cell {
+    min-height: 0;
+    aspect-ratio: 1;
+  }
+
+  .stem-tic-tac-toe__mark {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .stem-tic-tac-toe__btn {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    min-height: 56px;
+  }
+
+  .stem-tic-tac-toe__status {
+    margin-top: 20px;
+  }
+
+  .stem-tic-tac-toe__fact {
+    margin-top: 16px;
   }
 }
 
